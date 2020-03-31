@@ -1,0 +1,15 @@
+.app-wrapper {
+	background-position: center top;
+	background-repeat: no-repeat;
+	background-size: contain;
+	height: 670px;
+	width: 347px;
+}
+.centered {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-right: -50%;
+	text-align: center;
+	transform: translate(-50%, -50%);
+}
