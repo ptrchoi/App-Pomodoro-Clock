@@ -1,15 +1,19 @@
 .app-wrapper {
 	background-position: center top;
 	background-repeat: no-repeat;
-	background-size: contain;
+	color: white;
+	// background-size: contain;
 	height: 670px;
+	text-align: center;
+	// margin: 0 auto;
 	width: 347px;
 }
 .centered {
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	margin-right: -50%;
-	text-align: center;
-	transform: translate(-50%, -50%);
+	// position: absolute;
+	// left: 50%;
+	// margin-right: -50%;
+	// top: 50%;
+	// transform: translate(-50%, -50%);
+
+	margin: 0 auto;
 }

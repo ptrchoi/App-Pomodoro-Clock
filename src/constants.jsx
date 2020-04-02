@@ -1,0 +1,9 @@
+const C = {
+	DEFAULT_CLOCK: 'SESSION',
+	MAX_CLOCK: 60,
+	MIN_CLOCK: 1,
+	DEFAULT_SESSION: 25,
+	DEFAULT_BREAK: 5
+};
+
+export default C;
