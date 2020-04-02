@@ -10,8 +10,8 @@ const minusImgPressed = require('../images/minus-button-pressed.png');
 const plusImg = require('../images/plus-button.png');
 const plusImgPressed = require('../images/plus-button-pressed.png');
 const minsTextImg = require('../images/mins-text.png');
-const setSession = require('../images/settings-session.png');
-const setBreak = require('../images/settings-break.png');
+const sessionImg = require('../images/settings-session.png');
+const breakImg = require('../images/settings-break.png');
 const settingsBg = require('../images/session-box.png');
 
 import C from '../constants';
@@ -20,78 +20,51 @@ class Settings extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			currentClock: C.DEFAULT_CLOCK,
-			sessionMins: C.DEFAULT_SESSION,
-			breakMins: C.DEFAULT_BREAK
-		};
-
-		this.handlePlus = this.handlePlus.bind(this);
-		this.handleMinus = this.handleMinus.bind(this);
-		this.handleSessionSwitch = this.handleSessionSwitch.bind(this);
+		this.handleUpdate = this.handleUpdate.bind(this);
+		this.handleSettingSwitch = this.handleSettingSwitch.bind(this);
 	}
-	handleSessionSwitch(e) {
-		let { currentClock } = this.state;
-		console.log('handleSessionSwitch: currentClock: ', currentClock);
-
+	handleSettingSwitch(e, currentSetting) {
 		buttonSfx.play();
 
-		if (currentClock === 'SESSION') {
-			e.target.src = setBreak;
-			currentClock = 'BREAK';
-			console.log('SESSION is setting currentClock to : ', currentClock);
+		if (currentSetting === 'SESSION') {
+			e.target.src = breakImg;
+			currentSetting = 'BREAK';
 		} else {
-			e.target.src = setSession;
-			currentClock = 'SESSION';
-			console.log('BREAK is setting currentClock to : ', currentClock);
+			e.target.src = sessionImg;
+			currentSetting = 'SESSION';
 		}
-
-		this.setState({
-			currentClock: currentClock
-		});
+		this.props.onSettingSwitch(currentSetting);
 	}
-	handlePlus(currentClock, mins) {
+	handleUpdate(currentSetting, mins, type) {
 		buttonSfx.play();
 
-		if (mins < C.MAX_CLOCK) {
+		if (type === '+' && mins < C.MAX_CLOCK) {
 			mins++;
-			this.props.onSettings(mins);
-
-			currentClock === 'SESSION'
-				? this.setState({
-						sessionMins: mins
-					})
-				: this.setState({
-						breakMins: mins
-					});
-		}
-	}
-	handleMinus(currentClock, mins) {
-		buttonSfx.play();
-
-		if (mins > C.MIN_CLOCK) {
+		} else if (type === '-' && mins > C.MIN_CLOCK) {
 			mins--;
-			this.props.onSettings(currentClock, mins);
-
-			currentClock === 'SESSION'
-				? this.setState({
-						sessionMins: mins
-					})
-				: this.setState({
-						breakMins: mins
-					});
+		} else {
+			return;
 		}
+		this.props.onSettingUpdate(currentSetting, mins);
 	}
 	render() {
-		let paused = this.props.paused,
-			mins;
-		console.log('paused: ', paused);
-		let { currentClock, sessionMins, breakMins } = this.state;
-		currentClock === 'SESSION' ? (mins = this.state.sessionMins) : (mins = this.state.breakMins);
+		let { currentSetting, sessionMins, breakMins, paused } = this.props;
+		let mins;
+		currentSetting === 'SESSION' ? (mins = sessionMins) : (mins = breakMins);
+
+		// Format single digits with leading zero
+		mins < 10 ? (mins = '0' + mins.toString()) : mins;
 
 		return (
 			<div className="settings-wrapper" style={{ backgroundImage: `url(${settingsBg})` }}>
-				<img id="sessionSwitch" src={setSession} alt="settings" onClick={this.handleSessionSwitch} />
+				<img
+					id="sessionSwitch"
+					src={sessionImg}
+					alt="settings"
+					onClick={(e) => {
+						this.handleSettingSwitch(e, currentSetting);
+					}}
+				/>
 				<p>
 					<img id="minsText" src={minsTextImg} alt="Mins text" />
 				</p>
@@ -102,7 +75,7 @@ class Settings extends React.Component {
 					alt="minus button"
 					onClick={() => {
 						if (paused) {
-							this.handleMinus(currentClock, mins);
+							this.handleUpdate(currentSetting, mins, '-');
 						}
 					}}
 				/>
@@ -114,7 +87,7 @@ class Settings extends React.Component {
 					alt="plus button"
 					onClick={() => {
 						if (paused) {
-							this.handlePlus(currentClock, mins);
+							this.handleUpdate(currentSetting, mins, '+');
 						}
 					}}
 				/>
