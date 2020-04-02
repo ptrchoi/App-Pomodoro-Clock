@@ -16,37 +16,40 @@ class Clock extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			paused: true,
-			currentClock: this.props.currentClock
-		};
-
-		this.handleStart = this.handleStart.bind(this);
+		this.handlePause = this.handlePause.bind(this);
 		this.handleReset = this.handleReset.bind(this);
 	}
-	handleStart(e) {
-		this.state.paused ? (e.target.src = pauseImg) : (e.target.src = playImg);
+	handlePause(e, paused) {
+		paused ? (e.target.src = pauseImg) : (e.target.src = playImg);
 		buttonSfx.play();
 
-		console.log('Clock passing this state of paused to App: ', this.state.paused);
-		this.props.onPause(!this.state.paused); // Pass updated pause state to App Module
-		this.setState((prevState) => ({
-			paused: !prevState.paused
-		}));
+		// Pass updated pause state to App Module
+		this.props.onPause(!paused);
 	}
 	handleReset() {
 		buttonSfx.play();
-		this.props.onReset(this.state.currentClock); // Notify App of reset of current clock type
+
+		// Notify App of reset of current clock type
+		this.props.onReset();
 	}
 	handleSessionSwitch() {}
+
 	render() {
+		let { currentClock, paused } = this.props;
 		return (
 			<div className="clock-wrapper">
 				<div className="clock" style={{ backgroundImage: `url(${clockBg})` }}>
-					<p id="clockName">{this.state.currentClock}</p>
+					<p id="clockName">{currentClock}</p>
 					<img id="clockDisplay" src={clockDisplay} alt="clock display" />
 					<br />
-					<img className="clock-button" src={playImg} alt="start button" onClick={this.handleStart} />
+					<img
+						className="clock-button"
+						src={playImg}
+						alt="start button"
+						onClick={(e) => {
+							this.handlePause(e, paused);
+						}}
+					/>
 					<img className="clock-button" src={resetImg} alt="reset button" onClick={this.handleReset} />
 				</div>
 			</div>

@@ -36,8 +36,8 @@ class App extends React.Component {
 			paused: paused
 		});
 	}
-	handleReset(currentClock) {
-		console.log('handleReset called for currentClock: ', currentClock);
+	handleReset() {
+		console.log('handleReset called for currentClock: ', this.state.currentClock);
 	}
 	handleSettingSwitch(currentSetting) {
 		this.setState({
@@ -60,15 +60,13 @@ class App extends React.Component {
 		return (
 			<div className="app-wrapper centered" style={{ backgroundImage: `url(${bgImg})` }}>
 				<h1>Pomodoro Clock</h1>
-				<Clock currentClock={this.state.currentClock} onPause={this.handlePause} onReset={this.handleReset} />
+				<Clock {...this.state} onPause={this.handlePause} onReset={this.handleReset} />
 				<Settings
-					paused={this.state.paused}
-					currentSetting={this.state.currentSetting}
-					sessionMins={this.state.sessionMins}
-					breakMins={this.state.breakMins}
+					{...this.state}
 					onSettingSwitch={this.handleSettingSwitch}
 					onSettingUpdate={this.handleSettingUpdate}
 				/>
+
 				<Modal onModal={this.handleModal} />
 			</div>
 		);
