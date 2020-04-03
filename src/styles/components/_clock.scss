@@ -5,15 +5,24 @@
 	margin-top: 20px;
 	width: 340px;
 }
-.clock {
-	height: 320px;
+#clockName {
+	font-size: 30px;
+	padding-top: 40px;
+}
+.bg-img {
 	background-position: center top;
 	background-repeat: no-repeat;
 	background-size: contain;
 	margin: 0 auto;
+}
+.clock-display {
+	height: 320px;
 	width: 320px;
 }
-#clockName {
-	font-size: 30px;
-	padding-top: 40px;
+.time-display {
+	height: 115px;
+	width: 237px;
+}
+#timeDigits {
+	padding-top: 20px; // NEEDS to be centered dynamically
 }

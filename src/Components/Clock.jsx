@@ -6,15 +6,22 @@ import sfx1 from '../soundfx/Button_C-J_Fairba-8444_hifi.mp3';
 const buttonSfx = new Audio(sfx1);
 
 // Images (Parcel requires the 'require("filepath")' call)
-const clockDisplay = require('../images/timer-display-pressed.png');
 const playImg = require('../images/start-button.png');
 const pauseImg = require('../images/pause-button.png');
 const resetImg = require('../images/reset-button.png');
+const timeBg = require('../images/timer-display-pressed.png');
 const clockBg = require('../images/timer-bg.png');
+
+import C from '../constants';
 
 class Clock extends React.Component {
 	constructor(props) {
 		super(props);
+
+		this.state = {
+			mins: C.DEFAULT_SESSION,
+			secs: 0
+		};
 
 		this.handlePause = this.handlePause.bind(this);
 		this.handleReset = this.handleReset.bind(this);
@@ -22,6 +29,9 @@ class Clock extends React.Component {
 	handlePause(e, paused) {
 		paused ? (e.target.src = pauseImg) : (e.target.src = playImg);
 		buttonSfx.play();
+
+		// If unpaused, start timer
+		if (!paused) this.startTimer;
 
 		// Pass updated pause state to App Module
 		this.props.onPause(!paused);
@@ -35,13 +45,19 @@ class Clock extends React.Component {
 	handleSessionSwitch() {}
 
 	render() {
-		let { currentClock, paused } = this.props;
+		let { currentTimer, paused } = this.props;
+		let { mins, secs } = this.state;
+
+		let mins_twoDigits = ('0' + mins).slice(-2);
+		let secs_twoDigits = ('0' + secs).slice(-2);
+
 		return (
 			<div className="clock-wrapper">
-				<div className="clock" style={{ backgroundImage: `url(${clockBg})` }}>
-					<p id="clockName">{currentClock}</p>
-					<img id="clockDisplay" src={clockDisplay} alt="clock display" />
-					<br />
+				<div className="clock-display bg-img" style={{ backgroundImage: `url(${clockBg})` }}>
+					<p id="clockName">{currentTimer}</p>
+					<div className="time-display bg-img" style={{ backgroundImage: `url(${timeBg})` }}>
+						<p id="timeDigits">{mins_twoDigits + ':' + secs_twoDigits}</p>
+					</div>
 					<img
 						className="clock-button"
 						src={playImg}
