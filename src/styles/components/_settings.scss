@@ -1,10 +1,10 @@
 .settings-wrapper {
-	height: 165px;
+	height: $SETTINGS_H;
 	background-position: center top;
 	background-repeat: no-repeat;
 	margin: 0 auto;
 	margin-top: 20px;
-	width: 305px;
+	width: $SETTINGS_W;
 }
 #minsTextImg {
 	margin-top: -10px;

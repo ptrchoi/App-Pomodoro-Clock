@@ -1,9 +1,9 @@
 .clock-wrapper {
-	height: 340px;
+	height: $CLOCK_WRAP_SIDE;
 	font-size: 48px;
 	margin: 0 auto;
 	margin-top: 20px;
-	width: 340px;
+	width: $CLOCK_WRAP_SIDE;
 }
 #clockName {
 	font-size: 30px;
@@ -16,12 +16,12 @@
 	margin: 0 auto;
 }
 .clock-display {
-	height: 320px;
-	width: 320px;
+	height: $CLOCK_BG_SIDE;
+	width: $CLOCK_BG_SIDE;
 }
 .time-display {
-	height: 115px;
-	width: 237px;
+	height: $TIME_BG_H;
+	width: $TIME_BG_W;
 }
 #timeDigits {
 	padding-top: 20px; // NEEDS to be centered dynamically

@@ -48,9 +48,9 @@ class Settings extends React.Component {
 		this.props.onSettingUpdate(currentSetting, mins);
 	}
 	render() {
-		let { currentSetting, sessionMins, breakMins, paused } = this.props;
+		let { currentSetting, sessionTime, breakTime, paused } = this.props;
 		let mins;
-		currentSetting === 'SESSION' ? (mins = sessionMins) : (mins = breakMins);
+		currentSetting === 'SESSION' ? (mins = sessionTime) : (mins = breakTime);
 
 		// Format single digits with leading zero
 		mins < 10 ? (mins = '0' + mins.toString()) : mins;

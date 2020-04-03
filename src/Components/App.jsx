@@ -19,11 +19,12 @@ class App extends React.Component {
 		this.state = {
 			currentTimer: C.DEFAULT_TIMER,
 			currentSetting: C.DEFAULT_SETTING,
-			sessionMins: C.DEFAULT_SESSION,
-			breakMins: C.DEFAULT_BREAK,
+			sessionTime: C.DEFAULT_SESSION,
+			breakTime: C.DEFAULT_BREAK,
 			paused: true,
-			currentMins: 0,
-			currentSecs: 0
+			currentMins: C.DEFAULT_SESSION,
+			currentSecs: 0,
+			interval: null
 		};
 
 		this.handlePause = this.handlePause.bind(this);
@@ -32,12 +33,15 @@ class App extends React.Component {
 		this.handleSettingUpdate = this.handleSettingUpdate.bind(this);
 		this.handleModal = this.handleModal.bind(this);
 
-		this.setTimer = this.startTimer.bind(this);
-		this.startTimer = this.startTimer.bind(this);
+		this.setTimer = this.setTimer.bind(this);
 		this.updateTimer = this.updateTimer.bind(this);
+		this.tickTimer = this.tickTimer.bind(this);
 	}
 	handlePause(paused) {
-		console.log('App handlePause - paused: ', paused);
+		// console.log('App handlePause - paused: ', paused);
+
+		this.updateTimer(paused);
+
 		this.setState({
 			paused: paused
 		});
@@ -53,10 +57,10 @@ class App extends React.Component {
 	handleSettingUpdate(currentSetting, mins) {
 		currentSetting === 'SESSION'
 			? this.setState({
-					sessionMins: mins
+					sessionTime: mins
 				})
 			: this.setState({
-					breakMins: mins
+					breakTime: mins
 				});
 	}
 	handleModal() {
@@ -64,25 +68,36 @@ class App extends React.Component {
 	}
 
 	setTimer() {
-		this.props.currentClock === 'SESSION' ? (mins = sessionMins) : (mins = breakMins);
+		this.props.currentClock === 'SESSION' ? (mins = sessionTime) : (mins = breakTime);
 	}
-	startTimer() {
-		let interval = setInterval(this.updateTimer(), 1000); //milliseconds
+	updateTimer(paused) {
+		let { interval } = this.state;
+
+		if (paused) {
+			clearInterval(interval);
+		} else {
+			interval = setInterval(() => {
+				this.tickTimer();
+			}, 1000);
+		}
+
+		this.setState({
+			interval: interval
+		});
 	}
-	updateTimer() {
+	tickTimer() {
 		let { currentMins, currentSecs } = this.state;
 
-		console.log('updateTimer');
+		console.log('tickTimer');
 
 		if (currentMins === 0 && currentSecs === 0) {
-			// beep_sfx.play();
-			// swtichTimer();
+			// 	// beep_sfx.play();
+			// 	// swtichTimer();
 		}
 		if (currentSecs === 0 && currentMins > 0) {
 			currentMins--;
-			currentSecs = 59;
+			currentSecs = 60;
 		}
-		// displayTimer();
 		currentSecs--;
 
 		this.setState({

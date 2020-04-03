@@ -18,20 +18,12 @@ class Clock extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			mins: C.DEFAULT_SESSION,
-			secs: 0
-		};
-
 		this.handlePause = this.handlePause.bind(this);
 		this.handleReset = this.handleReset.bind(this);
 	}
 	handlePause(e, paused) {
 		paused ? (e.target.src = pauseImg) : (e.target.src = playImg);
 		buttonSfx.play();
-
-		// If unpaused, start timer
-		if (!paused) this.startTimer;
 
 		// Pass updated pause state to App Module
 		this.props.onPause(!paused);
@@ -45,11 +37,10 @@ class Clock extends React.Component {
 	handleSessionSwitch() {}
 
 	render() {
-		let { currentTimer, paused } = this.props;
-		let { mins, secs } = this.state;
+		let { currentTimer, paused, currentMins, currentSecs } = this.props;
 
-		let mins_twoDigits = ('0' + mins).slice(-2);
-		let secs_twoDigits = ('0' + secs).slice(-2);
+		let mins_twoDigits = ('0' + currentMins).slice(-2);
+		let secs_twoDigits = ('0' + currentSecs).slice(-2);
 
 		return (
 			<div className="clock-wrapper">
