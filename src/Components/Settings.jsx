@@ -49,11 +49,11 @@ class Settings extends React.Component {
 	}
 	render() {
 		let { currentSetting, sessionTime, breakTime, paused } = this.props;
-		let mins;
+		let mins, formattedMins;
 		currentSetting === 'SESSION' ? (mins = sessionTime) : (mins = breakTime);
 
 		// Format single digits with leading zero
-		mins < 10 ? (mins = '0' + mins.toString()) : mins;
+		mins < 10 ? (formattedMins = '0' + mins.toString()) : (formattedMins = mins);
 
 		return (
 			<div className="settings-wrapper" style={{ backgroundImage: `url(${settingsBg})` }}>
@@ -79,7 +79,7 @@ class Settings extends React.Component {
 						}
 					}}
 				/>
-				<span id="sessionTime">{mins}</span>
+				<span id="sessionTime">{formattedMins}</span>
 				<img
 					className="settings-btn"
 					id="plusBtn"

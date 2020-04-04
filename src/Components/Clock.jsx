@@ -8,7 +8,6 @@ const buttonSfx = new Audio(sfx1);
 // Images (Parcel requires the 'require("filepath")' call)
 const playImg = require('../images/start-button.png');
 const pauseImg = require('../images/pause-button.png');
-const resetImg = require('../images/reset-button.png');
 const timeBg = require('../images/timer-display-pressed.png');
 const clockBg = require('../images/timer-bg.png');
 
@@ -19,7 +18,6 @@ class Clock extends React.Component {
 		super(props);
 
 		this.handlePause = this.handlePause.bind(this);
-		this.handleReset = this.handleReset.bind(this);
 	}
 	handlePause(e, paused) {
 		paused ? (e.target.src = pauseImg) : (e.target.src = playImg);
@@ -28,14 +26,6 @@ class Clock extends React.Component {
 		// Pass updated pause state to App Module
 		this.props.onPause(!paused);
 	}
-	handleReset() {
-		buttonSfx.play();
-
-		// Notify App of reset of current clock type
-		this.props.onReset();
-	}
-	handleSessionSwitch() {}
-
 	render() {
 		let { currentTimer, paused, currentMins, currentSecs } = this.props;
 
@@ -57,7 +47,6 @@ class Clock extends React.Component {
 							this.handlePause(e, paused);
 						}}
 					/>
-					<img className="clock-button" src={resetImg} alt="reset button" onClick={this.handleReset} />
 				</div>
 			</div>
 		);

@@ -6,8 +6,15 @@ import Clock from './Clock';
 import Settings from './Settings';
 import Modal from './Modal';
 
+// Audio files (Parcel requires the file path import)
+import sfx1 from '../soundfx/Button_C-J_Fairba-8444_hifi.mp3';
+const buttonSfx = new Audio(sfx1);
+import sfx2 from '../soundfx/Beep_tim-Matthieu-8588_hifi.mp3';
+const endSfx = new Audio(sfx2);
+
 // Images
 const bgImg = require('../images/background.png');
+const resetImg = require('../images/reset-button.png');
 
 // Constants
 import C from '../constants';
@@ -33,9 +40,9 @@ class App extends React.Component {
 		this.handleSettingUpdate = this.handleSettingUpdate.bind(this);
 		this.handleModal = this.handleModal.bind(this);
 
-		this.setTimer = this.setTimer.bind(this);
 		this.updateTimer = this.updateTimer.bind(this);
 		this.tickTimer = this.tickTimer.bind(this);
+		this.switchTimer = this.switchTimer.bind(this);
 	}
 	handlePause(paused) {
 		// console.log('App handlePause - paused: ', paused);
@@ -47,7 +54,19 @@ class App extends React.Component {
 		});
 	}
 	handleReset() {
-		console.log('handleReset called for currentTimer: ', this.state.currentTimer);
+		if (this.state.paused) {
+			buttonSfx.play();
+			this.setState({
+				currentTimer: C.DEFAULT_TIMER,
+				currentSetting: C.DEFAULT_SETTING,
+				sessionTime: C.DEFAULT_SESSION,
+				breakTime: C.DEFAULT_BREAK,
+				paused: true,
+				currentMins: C.DEFAULT_SESSION,
+				currentSecs: 0,
+				interval: null
+			});
+		}
 	}
 	handleSettingSwitch(currentSetting) {
 		this.setState({
@@ -55,6 +74,13 @@ class App extends React.Component {
 		});
 	}
 	handleSettingUpdate(currentSetting, mins) {
+		console.log('handleSettingUpdate -----------------------------------');
+		console.log('currentSetting: ', currentSetting);
+		console.log('mins: ', mins);
+
+		let { currentTimer } = this.state;
+		console.log('currentTimer: ', currentTimer);
+
 		currentSetting === 'SESSION'
 			? this.setState({
 					sessionTime: mins
@@ -62,16 +88,23 @@ class App extends React.Component {
 			: this.setState({
 					breakTime: mins
 				});
+
+		// Update current paused timer if modified by user
+		if (
+			(currentSetting === 'SESSION' && currentTimer === 'SESSION') ||
+			(currentSetting === 'BREAK' && currentTimer === 'BREAK')
+		) {
+			this.setState({
+				currentMins: mins,
+				currentSecs: 0
+			});
+		}
 	}
 	handleModal() {
 		console.log('handleModal');
 	}
-
-	setTimer() {
-		this.props.currentClock === 'SESSION' ? (mins = sessionTime) : (mins = breakTime);
-	}
 	updateTimer(paused) {
-		let { interval } = this.state;
+		let { currentMins, currentSecs, interval } = this.state;
 
 		if (paused) {
 			clearInterval(interval);
@@ -88,21 +121,37 @@ class App extends React.Component {
 	tickTimer() {
 		let { currentMins, currentSecs } = this.state;
 
-		console.log('tickTimer');
-
 		if (currentMins === 0 && currentSecs === 0) {
-			// 	// beep_sfx.play();
-			// 	// swtichTimer();
+			this.switchTimer();
+		} else {
+			if (currentSecs === 0 && currentMins > 0) {
+				currentMins--;
+				currentSecs = 60;
+			}
+			currentSecs--;
+
+			this.setState({
+				currentMins: currentMins,
+				currentSecs: currentSecs
+			});
 		}
-		if (currentSecs === 0 && currentMins > 0) {
-			currentMins--;
-			currentSecs = 60;
+	}
+	switchTimer() {
+		let { currentTimer, sessionTime, breakTime, currentMins } = this.state;
+		endSfx.play();
+
+		if (currentTimer === 'SESSION') {
+			currentTimer = 'BREAK';
+			currentMins = breakTime;
+		} else {
+			currentTimer = 'SESSION';
+			currentMins = sessionTime;
 		}
-		currentSecs--;
 
 		this.setState({
+			currentTimer: currentTimer,
 			currentMins: currentMins,
-			currentSecs: currentSecs
+			currentSecs: 0
 		});
 	}
 
@@ -110,12 +159,13 @@ class App extends React.Component {
 		return (
 			<div className="app-wrapper centered" style={{ backgroundImage: `url(${bgImg})` }}>
 				<h1>Pomodoro Clock</h1>
-				<Clock {...this.state} onPause={this.handlePause} onReset={this.handleReset} />
+				<Clock {...this.state} onPause={this.handlePause} />
 				<Settings
 					{...this.state}
 					onSettingSwitch={this.handleSettingSwitch}
 					onSettingUpdate={this.handleSettingUpdate}
 				/>
+				<img className="clock-button" src={resetImg} alt="reset button" onClick={this.handleReset} />
 				<Modal onModal={this.handleModal} />
 			</div>
 		);
