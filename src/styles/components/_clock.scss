@@ -26,3 +26,11 @@
 #timeDigits {
 	padding-top: 20px; // NEEDS to be centered dynamically
 }
+.blinking {
+	animation: blinker 1s step-start infinite;
+}
+@keyframes blinker {
+	50% {
+		opacity: 0;
+	}
+}
