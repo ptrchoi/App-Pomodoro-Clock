@@ -3,6 +3,7 @@
 	background-repeat: no-repeat;
 	color: white;
 	height: $APP_H;
+	position: relative;
 	text-align: center;
 	width: $APP_W;
 }
@@ -11,4 +12,21 @@
 }
 #appTitle {
 	padding-top: 12px;
+}
+.info-btn {
+	padding-top: 12px;
+}
+.info-card {
+	position: absolute;
+	top: 0%;
+	left: 50%;
+	transform: translate(-50%, 0%);
+	height: 418px;
+	width: 347px;
+}
+.showMe {
+	display: inline block;
+}
+.hideMe {
+	display: none;
 }

@@ -4,16 +4,19 @@ import React from 'react';
 // Components
 import Clock from './Clock';
 import Settings from './Settings';
-import Modal from './Modal';
 
 // Audio files (Parcel requires the file path import)
 import sfx1 from '../soundfx/Button_C-J_Fairba-8444_hifi.mp3';
 const buttonSfx = new Audio(sfx1);
 import sfx2 from '../soundfx/Beep_tim-Matthieu-8588_hifi.mp3';
 const endSfx = new Audio(sfx2);
+import sfx3 from '../soundfx/ButtonKi-Intermed-544_hifi.mp3';
+const swishSfx = new Audio(sfx3);
 
 // Images
 const bgImg = require('../images/background.png');
+const infoBtnImg = require('../images/info-button.png');
+const infoCardImg = require('../images/info-card.png');
 
 // Constants
 import C from '../constants';
@@ -30,14 +33,15 @@ class App extends React.Component {
 			paused: true,
 			currentMins: C.DEFAULT_SESSION,
 			currentSecs: 0,
-			interval: null
+			interval: null,
+			infoExpanded: false
 		};
 
 		this.handlePause = this.handlePause.bind(this);
 		this.handleRestart = this.handleRestart.bind(this);
 		this.handleSettingSwitch = this.handleSettingSwitch.bind(this);
 		this.handleSettingUpdate = this.handleSettingUpdate.bind(this);
-		this.handleModal = this.handleModal.bind(this);
+		this.toggleInfo = this.toggleInfo.bind(this);
 		this.updateTimer = this.updateTimer.bind(this);
 		this.tickTimer = this.tickTimer.bind(this);
 		this.switchTimer = this.switchTimer.bind(this);
@@ -86,9 +90,6 @@ class App extends React.Component {
 				currentSecs: 0
 			});
 		}
-	}
-	handleModal() {
-		console.log('handleModal');
 	}
 	updateTimer(paused) {
 		let { currentMins, currentSecs, interval } = this.state;
@@ -141,6 +142,27 @@ class App extends React.Component {
 			currentSecs: 0
 		});
 	}
+	toggleInfo(e) {
+		let { infoExpanded } = this.state;
+		let btn = this.refs.infoBtn;
+		let card = this.refs.infoCard;
+
+		swishSfx.play();
+
+		if (!infoExpanded) {
+			card.className = 'info-card showMe';
+			btn.className = 'hideMe';
+			infoExpanded = true;
+		} else {
+			btn.className = 'info-btn showMe';
+			card.className = 'hideMe';
+			infoExpanded = false;
+		}
+
+		this.setState({
+			infoExpanded: infoExpanded
+		});
+	}
 
 	render() {
 		return (
@@ -152,7 +174,14 @@ class App extends React.Component {
 					onSettingSwitch={this.handleSettingSwitch}
 					onSettingUpdate={this.handleSettingUpdate}
 				/>
-				<Modal onModal={this.handleModal} />
+				<img
+					ref="infoBtn"
+					className="info-btn showMe"
+					src={infoBtnImg}
+					alt="Info button"
+					onClick={this.toggleInfo}
+				/>
+				<img ref="infoCard" className="hideMe" src={infoCardImg} alt="Info Card" onClick={this.toggleInfo} />
 			</div>
 		);
 	}
