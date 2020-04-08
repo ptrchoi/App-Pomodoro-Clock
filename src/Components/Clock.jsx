@@ -8,6 +8,7 @@ const buttonSfx = new Audio(sfx1);
 // Images (Parcel requires the 'require("filepath")' call)
 const playImg = require('../images/start-button.png');
 const pauseImg = require('../images/pause-button.png');
+const restartImg = require('../images/reset-button.png');
 const timeBg = require('../images/timer-display-pressed.png');
 const clockBg = require('../images/timer-bg.png');
 
@@ -18,6 +19,7 @@ class Clock extends React.Component {
 		super(props);
 
 		this.handlePause = this.handlePause.bind(this);
+		this.handleRestart = this.handleRestart.bind(this);
 	}
 	handlePause(e, paused) {
 		paused ? (e.target.src = pauseImg) : (e.target.src = playImg);
@@ -25,6 +27,15 @@ class Clock extends React.Component {
 
 		// Pass updated pause state to App Module
 		this.props.onPause(!paused);
+	}
+	handleRestart(paused) {
+		if (!paused) {
+			// Pause timer
+			this.refs.playButton.click(paused);
+		}
+		buttonSfx.play();
+		// Pass restart notificaion to App Module
+		this.props.onRestart();
 	}
 	render() {
 		let { currentTimer, paused, currentMins, currentSecs } = this.props;
@@ -40,11 +51,20 @@ class Clock extends React.Component {
 						<p id="timeDigits">{mins_twoDigits + ':' + secs_twoDigits}</p>
 					</div>
 					<img
+						ref="playButton"
 						className="clock-button"
 						src={playImg}
 						alt="start button"
 						onClick={(e) => {
 							this.handlePause(e, paused);
+						}}
+					/>
+					<img
+						className="clock-button"
+						src={restartImg}
+						alt="restart button"
+						onClick={() => {
+							this.handleRestart(paused);
 						}}
 					/>
 				</div>

@@ -14,7 +14,6 @@ const endSfx = new Audio(sfx2);
 
 // Images
 const bgImg = require('../images/background.png');
-const resetImg = require('../images/reset-button.png');
 
 // Constants
 import C from '../constants';
@@ -35,38 +34,31 @@ class App extends React.Component {
 		};
 
 		this.handlePause = this.handlePause.bind(this);
-		this.handleReset = this.handleReset.bind(this);
+		this.handleRestart = this.handleRestart.bind(this);
 		this.handleSettingSwitch = this.handleSettingSwitch.bind(this);
 		this.handleSettingUpdate = this.handleSettingUpdate.bind(this);
 		this.handleModal = this.handleModal.bind(this);
-
 		this.updateTimer = this.updateTimer.bind(this);
 		this.tickTimer = this.tickTimer.bind(this);
 		this.switchTimer = this.switchTimer.bind(this);
 	}
 	handlePause(paused) {
-		// console.log('App handlePause - paused: ', paused);
-
 		this.updateTimer(paused);
 
 		this.setState({
 			paused: paused
 		});
 	}
-	handleReset() {
-		if (this.state.paused) {
-			buttonSfx.play();
-			this.setState({
-				currentTimer: C.DEFAULT_TIMER,
-				currentSetting: C.DEFAULT_SETTING,
-				sessionTime: C.DEFAULT_SESSION,
-				breakTime: C.DEFAULT_BREAK,
-				paused: true,
-				currentMins: C.DEFAULT_SESSION,
-				currentSecs: 0,
-				interval: null
-			});
-		}
+	handleRestart() {
+		let { currentTimer, currentMins, sessionTime, breakTime } = this.state;
+
+		currentTimer === 'SESSION' ? (currentMins = sessionTime) : (currentMins = breakTime);
+		buttonSfx.play();
+		this.setState({
+			currentMins: currentMins,
+			currentSecs: 0,
+			interval: null
+		});
 	}
 	handleSettingSwitch(currentSetting) {
 		this.setState({
@@ -74,12 +66,7 @@ class App extends React.Component {
 		});
 	}
 	handleSettingUpdate(currentSetting, mins) {
-		console.log('handleSettingUpdate -----------------------------------');
-		console.log('currentSetting: ', currentSetting);
-		console.log('mins: ', mins);
-
 		let { currentTimer } = this.state;
-		console.log('currentTimer: ', currentTimer);
 
 		currentSetting === 'SESSION'
 			? this.setState({
@@ -158,14 +145,13 @@ class App extends React.Component {
 	render() {
 		return (
 			<div className="app-wrapper centered" style={{ backgroundImage: `url(${bgImg})` }}>
-				<h1>Pomodoro Clock</h1>
-				<Clock {...this.state} onPause={this.handlePause} />
+				<h1 id="appTitle">Pomodoro Clock</h1>
+				<Clock {...this.state} onPause={this.handlePause} onRestart={this.handleRestart} />
 				<Settings
 					{...this.state}
 					onSettingSwitch={this.handleSettingSwitch}
 					onSettingUpdate={this.handleSettingUpdate}
 				/>
-				<img className="clock-button" src={resetImg} alt="reset button" onClick={this.handleReset} />
 				<Modal onModal={this.handleModal} />
 			</div>
 		);

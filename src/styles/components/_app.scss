@@ -2,18 +2,13 @@
 	background-position: center top;
 	background-repeat: no-repeat;
 	color: white;
-	// background-size: contain;
 	height: $APP_H;
 	text-align: center;
-	// margin: 0 auto;
 	width: $APP_W;
 }
 .centered {
-	// position: absolute;
-	// left: 50%;
-	// margin-right: -50%;
-	// top: 50%;
-	// transform: translate(-50%, -50%);
-
 	margin: 0 auto;
+}
+#appTitle {
+	padding-top: 12px;
 }
