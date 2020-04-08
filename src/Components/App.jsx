@@ -34,6 +34,8 @@ class App extends React.Component {
 			currentMins: C.DEFAULT_SESSION,
 			currentSecs: 0,
 			interval: null,
+			blinkInterval: null,
+			blinkOn: true,
 			infoExpanded: false
 		};
 
@@ -44,6 +46,7 @@ class App extends React.Component {
 		this.toggleInfo = this.toggleInfo.bind(this);
 		this.updateTimer = this.updateTimer.bind(this);
 		this.tickTimer = this.tickTimer.bind(this);
+		this.blinkSeconds = this.blinkSeconds.bind(this);
 		this.switchTimer = this.switchTimer.bind(this);
 	}
 	handlePause(paused) {
@@ -58,10 +61,15 @@ class App extends React.Component {
 
 		currentTimer === 'SESSION' ? (currentMins = sessionTime) : (currentMins = breakTime);
 		buttonSfx.play();
+
+		document.getElementById('secondsColon').style.visibility = 'visible';
+
 		this.setState({
 			currentMins: currentMins,
 			currentSecs: 0,
-			interval: null
+			interval: null,
+			blinkInterval: null,
+			blinkOn: true
 		});
 	}
 	handleSettingSwitch(currentSetting) {
@@ -92,18 +100,33 @@ class App extends React.Component {
 		}
 	}
 	updateTimer(paused) {
-		let { currentMins, currentSecs, interval } = this.state;
+		let { currentMins, currentSecs, interval, blinkInterval } = this.state;
 
 		if (paused) {
 			clearInterval(interval);
+			clearInterval(blinkInterval);
 		} else {
 			interval = setInterval(() => {
 				this.tickTimer();
 			}, 1000);
+			blinkInterval = setInterval(() => {
+				this.blinkSeconds();
+			}, 500);
 		}
 
 		this.setState({
-			interval: interval
+			interval: interval,
+			blinkInterval: blinkInterval
+		});
+	}
+	blinkSeconds() {
+		let { blinkOn } = this.state;
+		let colon = document.getElementById('secondsColon');
+
+		blinkOn ? (colon.style.visibility = 'visible') : (colon.style.visibility = 'hidden');
+
+		this.setState({
+			blinkOn: !blinkOn
 		});
 	}
 	tickTimer() {

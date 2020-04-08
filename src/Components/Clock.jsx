@@ -49,7 +49,7 @@ class Clock extends React.Component {
 					<p id="clockName">{currentTimer}</p>
 					<div className="time-display bg-img" style={{ backgroundImage: `url(${timeBg})` }}>
 						<p id="timeDigits">
-							{mins_twoDigits} <span className={!paused ? 'blinking' : ''}>:</span> {secs_twoDigits}
+							{mins_twoDigits} <span id="secondsColon">:</span> {secs_twoDigits}
 						</p>
 					</div>
 					<img
