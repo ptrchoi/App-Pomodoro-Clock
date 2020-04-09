@@ -1,6 +1,6 @@
 .clock-wrapper {
 	height: $CLOCK_WRAP_SIDE;
-	font-size: 48px;
+	font-size: 54px;
 	margin: 0 auto;
 	margin-top: 20px;
 	width: $CLOCK_WRAP_SIDE;
@@ -23,14 +23,13 @@
 	height: $TIME_BG_H;
 	width: $TIME_BG_W;
 }
+#minSpan {
+	padding-right: 3px;
+}
+#secSpan {
+	padding-left: 3px;
+}
 #timeDigits {
-	padding-top: 20px; // NEEDS to be centered dynamically
-}
-.blinking {
-	animation: blinker 1s step-start infinite;
-}
-@keyframes blinker {
-	50% {
-		opacity: 0;
-	}
+	letter-spacing: 3px;
+	padding-top: 20px;
 }
